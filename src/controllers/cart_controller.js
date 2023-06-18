@@ -4,12 +4,12 @@ const CartController = {
 
     getCartFromUser: async function (req, resp) {
         try {
-            const user=req.params.user;
-            const foundCart = await CartModel.findOne({ user: user });
+            const user = req.params.user;
+            const foundCart = await CartModel.findOne({ user: user }).populate("items.product");
             if (!foundCart) {
                 return resp.json({ success: true, data: [], });
             } else {
-                return resp.json({ success: false, data: foundCart.items });
+                return resp.json({ success: false, data: foundCart });
             }
         } catch (ex) {
             console.log(ex)
@@ -30,17 +30,25 @@ const CartController = {
                 });
                 await newCart.save();
                 return resp.json({ success: true, data: newCart, message: 'Product Added to Cart' });
-            }  
-                const updatedCart = await CartModel.findOneAndUpdate(
-                    { user: user },
-                    { $set: { items: { product: product, quantity: quantity } }, },
-                    { new: true });
+            }
 
-                return resp.json({ success: true, data: updatedCart, message: 'Product updated' });
-           
+            //Deleting the item if already exist
+            const DeletedItem = await CartModel.findOneAndUpdate(
+                {
+                    user: user
+                }, {
+                $pull: { items: { product: product } },
+            }, {
+                new: true
+            })
 
+            //If Cart Already Exist
+            const updatedCart = await CartModel.findOneAndUpdate(
+                { user: user },
+                { $set: { items: { product: product, quantity: quantity } }, },
+                { new: true });
 
-
+            return resp.json({ success: true, data: updatedCart.items, message: 'Product updated' });
 
         } catch (ex) {
             console.log(ex)
