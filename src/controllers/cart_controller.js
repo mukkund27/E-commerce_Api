@@ -9,7 +9,7 @@ const CartController = {
             if (!foundCart) {
                 return resp.json({ success: true, data: [], });
             } else {
-                return resp.json({ success: false, data: foundCart });
+                return resp.json({ success: true, data: foundCart });
             }
         } catch (ex) {
             console.log(ex)
@@ -46,7 +46,8 @@ const CartController = {
             const updatedCart = await CartModel.findOneAndUpdate(
                 { user: user },
                 { $set: { items: { product: product, quantity: quantity } }, },
-                { new: true });
+                { new: true }
+            ).populate("items.product");
 
             return resp.json({ success: true, data: updatedCart.items, message: 'Product updated' });
 
@@ -59,7 +60,11 @@ const CartController = {
     removeFromCart: async function (req, resp) {
         try {
             const { user, product } = req.body;
-            const updatedCart = await CartModel.findOneAndUpdate({ user: user }, { $pull: { items: { product: product } } });
+            const updatedCart = await CartModel.findOneAndUpdate(
+                { user: user },
+                { $pull: { items: { product: product } } },
+                { new: true }
+            ).populate("items.product");
             return resp.json({ success: true, data: updatedCart, message: 'Product Remove from Cart' });
         } catch (ex) {
             return resp.json({ success: false, message: ex });
