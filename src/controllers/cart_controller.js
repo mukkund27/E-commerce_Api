@@ -65,7 +65,7 @@ const CartController = {
                 { $pull: { items: { product: product } } },
                 { new: true }
             ).populate("items.product");
-            return resp.json({ success: true, data: updatedCart, message: 'Product Remove from Cart' });
+            return resp.json({ success: true, data: updatedCart.items, message: 'Product Remove from Cart' });
         } catch (ex) {
             return resp.json({ success: false, message: ex });
         }
