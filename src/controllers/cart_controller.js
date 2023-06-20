@@ -8,9 +8,9 @@ const CartController = {
             const foundCart = await CartModel.findOne({ user: user }).populate("items.product");
             if (!foundCart) {
                 return resp.json({ success: true, data: [], });
-            } else {
-                return resp.json({ success: true, data: foundCart });
-            }
+            }  
+                return resp.json({ success: true, data: foundCart.items });
+            
         } catch (ex) {
             console.log(ex)
             return resp.json({ success: false, message: ex });
