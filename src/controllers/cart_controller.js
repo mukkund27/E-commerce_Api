@@ -45,11 +45,11 @@ const CartController = {
             //If Cart Already Exist
             const updatedCart = await CartModel.findOneAndUpdate(
                 { user: user },
-                { $set: { items: { product: product, quantity: quantity } }, },
+                { $push: { items: { product: product, quantity: quantity } }, },
                 { new: true }
             ).populate("items.product");
 
-            return resp.json({ success: true, data: updatedCart.items, message: 'Product updated' });
+            return resp.json({ success: true, data: updatedCart.items, message: 'Product updated!' });
 
         } catch (ex) {
             console.log(ex)
