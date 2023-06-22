@@ -7,6 +7,7 @@ const userSchema = new Schema({
     email: { type: String, unique: true, required: true, },
     password :{type:String,required:true},
     phoneNumber:{type:String,default:""},
+    address:{type:String,default:""},
     city:{type:String,default:""},
     state:{type:String,default:""},
     profileProgress:{type:Number,default:0},
